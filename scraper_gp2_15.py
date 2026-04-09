@@ -103,7 +103,52 @@ def collect_weekly_releases(start_date, weeks, sleep_sec=1.1):
     result = pd.concat(frames, ignore_index=True)
     logger.info(f"Скачено {len(result)} строк (за {weeks} недель)")
     return result
+def parse_album_page(url):
+    soup = get_soup(url)
+    page_text = clean_text(soup.get_text(" ", strip=True))
 
+    meta_description = soup.find("meta", attrs={"name": "description"})
+    text_description = meta_description["content"] if meta_description else None
+    release_date = None
+    duration = None
+    styles = None
+
+    m = re.search(r"Release Date\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})", page_text)
+    if m:
+        release_date = m.group(1)
+
+    m = re.search(r"Duration\s+(\d{1,2}:\d{2})", page_text)
+    if m:
+        duration = m.group(1)
+
+    m = re.search(
+        r"Styles\s+(.+?)\s+(?:Recording Location|Vocal Styles|Submit Corrections|Discography Timeline)",
+        page_text
+    )
+    if m:
+        styles = m.group(1)
+
+    return {
+        "album_url": url,
+        "text_description": text_description,
+        "release_date": release_date,
+        "duration": duration,
+        "styles": styles
+    }
+
+def collect_album_details(urls, sleep_sec=1.1):
+    details = []
+    total = len(urls)
+    for i, url in enumerate(urls, 1):
+        try:
+            data = parse_album_page(url)
+            details.append(data)
+            logger.info(f"{i}/{total}: {url}")
+        except Exception as e:
+            logger.error(f"Ошибка {url}: {e}")
+        time.sleep(sleep_sec)
+
+    return pd.DataFrame(details)
 
 def run_scraper(start_date="20260410", n_weeks=20):
     import os
@@ -115,8 +160,14 @@ def run_scraper(start_date="20260410", n_weeks=20):
     weekly_df = collect_weekly_releases(start_date, n_weeks)
     weekly_df.to_csv("data/allmusic_stage1.csv", index=False)
     logger.info(f"Получили {len(weekly_df)} строк")
+    
+    album_urls = weekly_df["album_url"].dropna().unique().tolist()
+    details_df = collect_album_details(album_urls)
 
-    return weekly_df
+    final_df = weekly_df.merge(details_df, on="album_url", how="left")
+    final_df.to_csv("data/allmusic_final.csv", index=False)
+    logger.info(f"Финальный датасет: {len(final_df)} строк")
+    return final_df
 
 if __name__ == "__main__":
     run_scraper()
