@@ -150,7 +150,7 @@ def collect_album_details(urls, sleep_sec=0.5):
 
     return pd.DataFrame(details)
 
-def run_scraper(start_date="20260410", n_weeks=15):
+def run_scraper(start_date="20260410", n_weeks=20):
     import os
     os.makedirs("data", exist_ok=True)
     os.makedirs("logs", exist_ok=True)
