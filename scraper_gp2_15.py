@@ -9,7 +9,7 @@ import logging
 from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s",
-    handlers=[logging.FileHandler("logs/scraper.log", encoding="utf-8"), logging.StreamHandler()])
+    handlers=[logging.FileHandler("logs/scraper_gp2_15.log", encoding="utf-8"), logging.StreamHandler()])
 logger = logging.getLogger(__name__)
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36"}
