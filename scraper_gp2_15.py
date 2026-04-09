@@ -88,7 +88,7 @@ def parse_weekly_page(url, week):
     logger.info(f" За {week} скачено {len(df)} строк")
     return df
 
-def collect_weekly_releases(start_date, weeks, sleep_sec=1.1):
+def collect_weekly_releases(start_date, weeks, sleep_sec=0.5):
     week_urls = generate_week_urls(start_date, weeks)
     frames = []
 
@@ -136,7 +136,7 @@ def parse_album_page(url):
         "styles": styles
     }
 
-def collect_album_details(urls, sleep_sec=1.1):
+def collect_album_details(urls, sleep_sec=0.5):
     details = []
     total = len(urls)
     for i, url in enumerate(urls, 1):
@@ -150,7 +150,7 @@ def collect_album_details(urls, sleep_sec=1.1):
 
     return pd.DataFrame(details)
 
-def run_scraper(start_date="20260410", n_weeks=20):
+def run_scraper(start_date="20260410", n_weeks=15):
     import os
     os.makedirs("data", exist_ok=True)
     os.makedirs("logs", exist_ok=True)
