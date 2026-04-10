@@ -27,6 +27,18 @@ def run_eda():
     df1['duration'] = df1['duration'].str.split(':').apply(lambda x: round(int(x[0]) + int(x[1]) / 60) if type(x) == list else None)
 
     df1['release_year'] = df1['release_date'].dt.year
+    df = df1
+    df = pd.read_csv('lastfm_api.csv')
+    df_clean = df.copy()
+    df_clean = df_clean.dropna(subset=['artist'])
+    df_clean['artist_bio'] = df_clean['artist_bio'].fillna('No bio')
+    df_clean['top_tracks'] = df_clean['top_tracks'].fillna('No top tracks')
+    df_clean['top_albums'] = df_clean['top_albums'].fillna('No top albums')
+    df_clean['listeners'] = df_clean['listeners'].fillna(df_clean['listeners'].median())
+    df_clean['playcount'] = df_clean['playcount'].fillna(df_clean['playcount'].median())
+    df_clean = df_clean.drop(columns=['track_listeners'])
+    df = df_clean
 
 if __name__ == "__main__":
     run_eda()
+
