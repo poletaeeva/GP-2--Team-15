@@ -10,7 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 def run_eda():
-    pass
+    df1 = pd.read_csv('data/allmusic_final.csv')
+    df1 = df1.drop(columns=['album_url', 'image_url', 'text_description'])
+    df1 = df1[df1['rating'].isna() | df1['rating'].str.isnumeric()]
+    df1['rating'] = df1['rating'].astype(float)
+
+    df1['styles'] = df1['styles'].str.replace(r'\s*(Listen on|Set Your|Log In).*$', '', regex=True)
+    df1['styles'] = df1['styles'].str.strip()
+    df1['styles'] = df1['styles'].str.rstrip(',').str.strip()
 
 
 if __name__ == "__main__":
