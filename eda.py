@@ -19,7 +19,8 @@ def run_eda():
     df1['styles'] = df1['styles'].str.strip()
     df1['styles'] = df1['styles'].str.rstrip(',').str.strip()
 
-    
+    df1['duration'] = df1['duration'].fillna(df1['duration'].median())
+
     df1 = df1.drop_duplicates(subset=['artist', 'album_title'], keep='first')
 
     df1['week_date'] = pd.to_datetime(df1['week_date'].astype(str), format='%Y%m%d')
