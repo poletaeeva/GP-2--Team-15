@@ -19,7 +19,6 @@ def run_eda():
     df1['styles'] = df1['styles'].str.strip()
     df1['styles'] = df1['styles'].str.rstrip(',').str.strip()
 
-    df1['duration'] = df1['duration'].fillna(df1['duration'].median())
 
     df1 = df1.drop_duplicates(subset=['artist', 'album_title'], keep='first')
 
