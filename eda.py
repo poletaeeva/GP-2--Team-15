@@ -22,5 +22,9 @@ def run_eda():
     
     df1 = df1.drop_duplicates(subset=['artist', 'album_title'], keep='first')
 
+    df1['week_date'] = pd.to_datetime(df1['week_date'].astype(str), format='%Y%m%d')
+    df1['release_date'] = pd.to_datetime(df1['release_date'], format='%B %d, %Y', errors='coerce')
+    df1['duration'] = df1['duration'].str.split(':').apply(lambda x: round(int(x[0]) + int(x[1]) / 60) if type(x) == list else None)
+
 if __name__ == "__main__":
     run_eda()
