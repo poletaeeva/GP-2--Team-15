@@ -19,6 +19,8 @@ def run_eda():
     df1['styles'] = df1['styles'].str.strip()
     df1['styles'] = df1['styles'].str.rstrip(',').str.strip()
 
+    
+    df1 = df1.drop_duplicates(subset=['artist', 'album_title'], keep='first')
 
 if __name__ == "__main__":
     run_eda()
